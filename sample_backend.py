@@ -52,15 +52,23 @@ def get_user(id):
 def get_users():
 	if request.method == 'GET':
 		search_username = request.args.get('name')
-        	if search_username: 
-                	subdict={'users_list' :[]} 
-                	for user in users['users_list']:
-                        	if user['name'] == search_username:
-                                	subdict['users_list'].append(user)
-                	return subdict
-        	return users
+		search_job = request.args.get('job')
+		if search_username and search_job:
+			subdict={'users_list' :[]} 
+			for user in users['users_list']:
+					if user['name'] == search_username and user['job'] == search_job:
+							subdict['users_list'].append(user)
+							return subdict
+							break
+		elif search_username and search_job == None: 
+			subdict={'users_list' :[]} 
+			for user in users['users_list']:
+					if user['name'] == search_username:
+							subdict['users_list'].append(user)
+			return subdict
+		return users
 	elif request.method == 'POST':
-		usersToAdd = request.get_json()
+		userToAdd = request.get_json()
 		users['users_list'].append(userToAdd)
 		resp = jsonify(success=True)
 		return resp
@@ -70,5 +78,6 @@ def get_users():
 			for user in range(len(users['users_list'])):
 				if users['users_list'][user]['name'] == search_username:
 					del users['users_list'][user]
-					return 'deleted'
+					return search_username + "\n"
 		return 'cannot find user'
+	
