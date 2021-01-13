@@ -48,7 +48,7 @@ def get_user(id):
 		return ({})
 	return users
 
-@app.route('/users', methods = ['GET', 'POST'])
+@app.route('/users', methods = ['GET', 'POST', 'DELETE'])
 def get_users():
 	if request.method == 'GET':
 		search_username = request.args.get('name')
@@ -64,3 +64,11 @@ def get_users():
 		users['users_list'].append(userToAdd)
 		resp = jsonify(success=True)
 		return resp
+	elif request.method == 'DELETE':
+		search_username = request.args.get('name')
+		if search_username:
+			for user in range(len(users['users_list'])):
+				if users['users_list'][user]['name'] == search_username:
+					del users['users_list'][user]
+					return 'deleted'
+		return 'cannot find user'
